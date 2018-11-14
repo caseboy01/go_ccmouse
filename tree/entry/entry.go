@@ -2,8 +2,34 @@ package main
 
 import (
 	"fmt"
+	"golang.org/x/tools/container/intsets"
 	"mooc_google_shizhan/tree"
 )
+
+type myTreeNode struct {
+	node *tree.Node
+}
+
+func (myNode *myTreeNode) postOrder() {
+	if myNode == nil || myNode.node == nil {
+		return
+	}
+	left := myTreeNode{myNode.node.Left}
+	right := myTreeNode{myNode.node.Right}
+	left.postOrder()
+	right.postOrder()
+	myNode.node.Print()
+
+}
+
+func testSparse() {
+	s := intsets.Sparse{}
+	s.Insert(1)
+	s.Insert(1000)
+	s.Insert(1000000)
+	fmt.Println(s.Has(1000))
+
+}
 
 func main() {
 	var root tree.Node
@@ -42,5 +68,11 @@ func main() {
 	fmt.Println(root, root.Value, root.Left.Left, root.Left.Right)
 	fmt.Println()
 	root.Traverse()
+
+	fmt.Println()
+	mroot := myTreeNode{&root}
+	mroot.postOrder()
+
+	testSparse()
 
 }
