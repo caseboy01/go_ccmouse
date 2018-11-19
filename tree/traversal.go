@@ -2,11 +2,29 @@ package tree
 
 import "fmt"
 
-func (root *Node) Traverse() {
-	if root == nil {
+//func (node *Node) Traverse() {
+//	if node == nil {
+//		return
+//	}
+//	node.Left.Traverse()
+//	fmt.Print(node.Value, "\n")
+//	node.Right.Traverse()
+//}
+
+func (node *Node) Traverse() {
+
+	node.TraverseFunc(func(n *Node) {
+		n.Print()
+	})
+	fmt.Println()
+}
+
+func (node *Node) TraverseFunc(f func(*Node)) {
+	if node == nil {
 		return
 	}
-	root.Left.Traverse()
-	fmt.Print(root.Value, "\n")
-	root.Right.Traverse()
+
+	node.Left.TraverseFunc(f)
+	f(node)
+	node.Right.TraverseFunc(f)
 }
