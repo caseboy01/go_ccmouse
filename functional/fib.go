@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"mooc_google_shizhan/functional/fib"
 	"strings"
 )
 
@@ -38,14 +39,18 @@ func (g intGen) Read(p []byte) (n int, err error) {
 
 func printFileContents(reader io.Reader) {
 	scanner := bufio.NewScanner(reader)
-	for scanner.Scan() {
+	//for scanner.Scan() {
+	//	fmt.Println(scanner.Text())
+	//}
+	for i := 0; i < 15 && scanner.Scan(); i++ {
 		fmt.Println(scanner.Text())
 	}
 }
 
 func main() {
-	f := fibonacci()
-
+	//f := fibonacci()
+	//var f intGen = fibonacci()
+	var f intGen = fib.Fibonacci()
 	printFileContents(f)
 
 }
