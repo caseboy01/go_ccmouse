@@ -12,12 +12,27 @@ type appHandler func(w http.ResponseWriter, r *http.Request) error
 func errWrapper(handler appHandler) func(http.ResponseWriter, *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
+
+		//recover
+		defer func() {
+
+			if r := recover(); r != nil {
+				log.Printf("Panic:%v", r)
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
+		}()
+
 		err := handler(w, r)
 		if err != nil {
 
 			//log.Warn("Error handling request %s",err.Error())  //github gopm
 
 			log.Printf("Error occurred"+"handling request: %s", err.Error()) //内置的
+
+			if userErr, ok := err.(userError); ok {
+				http.Error(w, userErr.Message(), http.StatusBadRequest)
+				return
+			}
 
 			code := http.StatusOK //200
 			switch {
@@ -35,8 +50,13 @@ func errWrapper(handler appHandler) func(http.ResponseWriter, *http.Request) {
 
 }
 
+type userError interface {
+	error
+	Message() string
+}
+
 func main() {
-	http.HandleFunc("/list/", errWrapper(filelisting.HandleFileList))
+	http.HandleFunc("/", errWrapper(filelisting.HandleFileList))
 
 	err := http.ListenAndServe(":8888", nil)
 	if err != nil {
