@@ -13,6 +13,7 @@ func errWrapper(handler appHandler) func(http.ResponseWriter, *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		//panic error
 		//recover
 		defer func() {
 
@@ -27,6 +28,7 @@ func errWrapper(handler appHandler) func(http.ResponseWriter, *http.Request) {
 
 			//log.Warn("Error handling request %s",err.Error())  //github gopm
 
+			// user error
 			log.Printf("Error occurred"+"handling request: %s", err.Error()) //内置的
 
 			if userErr, ok := err.(userError); ok {
@@ -34,6 +36,7 @@ func errWrapper(handler appHandler) func(http.ResponseWriter, *http.Request) {
 				return
 			}
 
+			// system error
 			code := http.StatusOK //200
 			switch {
 			case os.IsNotExist(err):

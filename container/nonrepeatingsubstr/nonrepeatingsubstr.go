@@ -18,15 +18,20 @@ import (
 */
 
 func lengthOfNonRepeatingSubstr(s string) int {
-	lastOccurred := make(map[rune]int)
+	//lastOccurred := make(map[rune]int)
+	lastOccurred := make([]int, 0xfffff) //65535 用空间换时间
+	for i := range lastOccurred {
+		lastOccurred[i] = -1
+	}
+
 	start := 0
 	maxLength := 0
 	for i, ch := range []rune(s) {
-		lastI, ok := lastOccurred[ch]
+		lastI := lastOccurred[ch]
 
 		//fmt.Println(lastI,ok,ch)
 
-		if ok && lastI >= start {
+		if lastI != -1 && lastI >= start {
 			start = lastI + 1
 		}
 		if i-start+1 > maxLength {
